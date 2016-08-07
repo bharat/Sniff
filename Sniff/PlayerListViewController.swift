@@ -1,3 +1,4 @@
+
 //
 //  ViewController.swift
 //  Sniff
@@ -7,8 +8,9 @@
 //
 
 import UIKit
+import SwiftLoader
 
-class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class PlayerListViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     var sonosNetwork: SonosNetwork?
     
     @IBOutlet var sonosPlayersTableView: UITableView!
@@ -17,10 +19,17 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         // Do any additional setup after loading the view, typically from a nib.
 
         if sonosNetwork == nil {
-            sonosNetwork = SonosNetwork()
+            sonosNetwork = SonosNetwork(table: sonosPlayersTableView)
             sonosPlayersTableView.delegate = self
             sonosPlayersTableView.dataSource = self
+            
+            SwiftLoader.show(animated: true)
         }
+    }
+    
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -36,9 +45,13 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         return cell!
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if (segue.identifier == "showDetails") {
+            let svc = segue.destinationViewController as! PlayerDetailViewController;
+            let path = sonosPlayersTableView.indexPathForSelectedRow
+            svc.player = sonosNetwork!.getPlayer(path!.row)
+        }
     }
+
 }
 

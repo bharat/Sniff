@@ -8,49 +8,73 @@
 
 import Foundation
 import CocoaAsyncSocket
+import Regex
+import SwiftLoader
 
 class SonosNetwork: GCDAsyncUdpSocketDelegate {
-    var ssdpAddress          = "239.255.255.250"
-    var ssdpPort: UInt16     = 1900
+    var multicastGroup          = "239.255.255.250"
+    var multicastPort: UInt16   = 1900
     var ssdpSocket: GCDAsyncUdpSocket!
-    var sonosPlayers = [String: SonosPlayer]()
+    var players = [String: SonosPlayer]()
+    var table: UITableView!
     
-    init() {
-        ssdpSocket = GCDAsyncUdpSocket(delegate: self, delegateQueue: dispatch_get_main_queue())
-        broadcast()
+    init(table: UITableView) {
+        self.table = table
         
-        for tuple in [["Dining Room", "10.0.0.1"], ["Living Room", "10.0.0.2"], ["Office", "10.0.0.3"]] {
-            sonosPlayers[tuple[0]] = SonosPlayer(name: tuple[0], ipAddr: tuple[1])
-        }
+        // players.insert(MockSonosPlayer(network: self))
+        beginDiscovery()
     }
     
     func count() -> Int {
-        return sonosPlayers.count
+        return players.count
     }
     
     func getPlayer(index: Int) -> SonosPlayer {
-        let sortedKeys = sonosPlayers.keys.sort()
-        let name = sortedKeys[index]
-        return sonosPlayers[name]!
+        return players.values.sort()[index]
     }
     
-    func broadcast() {
-        try! ssdpSocket.bindToPort(ssdpPort)
+    func update() {
+        SwiftLoader.hide()
+        self.table.reloadData()
+    }
+    
+    func foundPlayer(host: String) {
+        if players[host] != nil {
+            return
+        }
+        print("Found player \(host)")
+    
+        let player = SonosPlayer(network: self, host: host)
+        
+        // We have to load the name before we can insert the player into the table since we display
+        // and sort on name.
+        player.getName({
+            self.players[host] = player
+            self.update()
+            
+            // After we've loaded the name then see if we can find other players
+            player.checkTopology()
+        })
+    }
+    
+    func beginDiscovery() {
+        ssdpSocket = GCDAsyncUdpSocket(delegate: self, delegateQueue: dispatch_get_main_queue())
+        try! ssdpSocket.bindToPort(multicastPort)
         try! ssdpSocket.beginReceiving()
         try! ssdpSocket.enableBroadcast(true)
-        try! ssdpSocket.joinMulticastGroup(ssdpAddress)
+        try! ssdpSocket.joinMulticastGroup(multicastGroup)
         
         // Use "ST: ssdp:all" to see all devices
         let data = (
             "M-SEARCH * HTTP/1.1\r\n" +
-            "HOST: 239.255.255.250:1900\r\n" +
-            "MAN: ssdp:discover\r\n" +
-            "MX: 3\r\n" +
+            "HOST: 239.255.255.250\r\n" +
+            "MAN: \"ssdp:discover\"\r\n" +
+            "MX: 2\r\n" +
             "ST: urn:schemas-upnp-org:device:ZonePlayer:1\r\n" +
             "USER-AGENT: Sniff/1.0\r\n" +
             "\r\n"
         ).dataUsingEncoding(NSUTF8StringEncoding)
-        print("Sending data!")
+        print("Beginning discovery")
         ssdpSocket.sendData(data!, withTimeout: 1, tag: 0)
     }
     
@@ -59,18 +83,18 @@ class SonosNetwork: GCDAsyncUdpSocketDelegate {
     }
     
     @objc func udpSocket(sock: GCDAsyncUdpSocket, didReceiveData data: NSData, fromAddress address: NSData, withFilterContext filterContext: AnyObject?) {
-        print("received response")
-        let msg = NSString(data: data, encoding: NSUTF8StringEncoding)
-        print(msg)
-        let reg: NSRegularExpression = try! NSRegularExpression(pattern: "http:\\/\\/([0-9\\.]*)", options: NSRegularExpressionOptions(rawValue: 0))
-        let match: NSTextCheckingResult? = reg.firstMatchInString(
-            msg as! String,
-            options: NSMatchingOptions(rawValue: 0),
-            range: NSMakeRange(0, (msg?.length)!))
-        
-        if (match != nil) {
-            let host = msg?.substringWithRange((match?.range)!)
-            print("Host: ", host!)
+        // print("received response")
+        let msg = NSString(data: data, encoding: NSUTF8StringEncoding) as! String
+        if msg.containsString("NOTIFY") {
+            // print("received notify: \(msg)")
+            if msg.containsString("ZonePlayer") {
+                print("detected ZonePlayer")
+                if let urlString = Regex("LOCATION: (.*)").match(msg)?.captures[0] {
+                    if let url = NSURL(string: urlString) {
+                        self.foundPlayer(url.host!)
+                    }
+                }
+            }
         }
     }
 }
