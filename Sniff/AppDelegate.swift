@@ -19,7 +19,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
         
         var config : SwiftLoader.Config = SwiftLoader.Config()
-        config.size = 150
+        config.size = 80
         config.spinnerColor = .redColor()
         config.foregroundColor = .blackColor()
         config.foregroundAlpha = 0.5
@@ -49,7 +49,5 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillTerminate(application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
-
-
 }
 

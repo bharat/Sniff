@@ -21,7 +21,6 @@ class PlayerDetailViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        print("detail load")
         nameLabel.text = player?.name
         hostLabel.text = player?.host
     }

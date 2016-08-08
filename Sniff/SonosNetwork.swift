@@ -9,19 +9,16 @@
 import Foundation
 import CocoaAsyncSocket
 import Regex
-import SwiftLoader
 
 class SonosNetwork: GCDAsyncUdpSocketDelegate {
     var multicastGroup          = "239.255.255.250"
     var multicastPort: UInt16   = 1900
     var ssdpSocket: GCDAsyncUdpSocket!
     var players = [String: SonosPlayer]()
-    var table: UITableView!
+    var notify: ()->Void
     
-    init(table: UITableView) {
-        self.table = table
-        
-        // players.insert(MockSonosPlayer(network: self))
+    init(notify: ()->Void) {
+        self.notify = notify
         beginDiscovery()
     }
     
@@ -33,27 +30,33 @@ class SonosNetwork: GCDAsyncUdpSocketDelegate {
         return players.values.sort()[index]
     }
     
+    func reset() {
+        self.players.removeAll(keepCapacity: true)
+    }
+    
     func update() {
-        SwiftLoader.hide()
-        self.table.reloadData()
+        self.notify()
     }
     
     func foundPlayer(host: String) {
         if players[host] != nil {
             return
         }
-        print("Found player \(host)")
     
         let player = SonosPlayer(network: self, host: host)
         
         // We have to load the name before we can insert the player into the table since we display
         // and sort on name.
         player.getName({
-            self.players[host] = player
-            self.update()
+            // Minimize race conditions
+            if self.players[host] == nil {
+                print("Found new player \(host)")
+                self.players[host] = player
+                self.update()
             
-            // After we've loaded the name then see if we can find other players
-            player.checkTopology()
+                // After we've loaded the name then see if we can find other players
+                player.checkTopology()
+            }
         })
     }
     
@@ -83,7 +86,6 @@ class SonosNetwork: GCDAsyncUdpSocketDelegate {
     }
     
     @objc func udpSocket(sock: GCDAsyncUdpSocket, didReceiveData data: NSData, fromAddress address: NSData, withFilterContext filterContext: AnyObject?) {
-        // print("received response")
         let msg = NSString(data: data, encoding: NSUTF8StringEncoding) as! String
         if msg.containsString("NOTIFY") {
             // print("received notify: \(msg)")
