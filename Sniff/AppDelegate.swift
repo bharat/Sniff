@@ -19,7 +19,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
         
         var config : SwiftLoader.Config = SwiftLoader.Config()
-        config.size = 80
+        config.size = 120
         config.spinnerColor = .redColor()
         config.foregroundColor = .blackColor()
         config.foregroundAlpha = 0.5
