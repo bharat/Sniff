@@ -9,20 +9,20 @@
 import UIKit
 
 class PlayerDetailViewController: UIViewController {
-    var sonosNetwork: SonosNetwork?
-    var player: SonosPlayer?
+    var sonosNetwork: Network?
+    var device: Device?
     
     @IBOutlet var nameLabel: UILabel!
     @IBOutlet var hostLabel: UILabel!
     
     @IBAction func reboot(sender: AnyObject) {
-        player?.reboot()
+        // device?.reboot()
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        nameLabel.text = player?.name
-        hostLabel.text = player?.host
+        nameLabel.text = device?.name
+        hostLabel.text = device?.host
     }
         
     override func didReceiveMemoryWarning() {

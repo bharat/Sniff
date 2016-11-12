@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Regex
 
 func ==(lhs: Device, rhs: Device) -> Bool {
     return lhs.name == rhs.name
@@ -19,10 +20,18 @@ func <(lhs: Device, rhs: Device) -> Bool {
 class Device: Equatable, Hashable, Comparable {
     var name: String!
     var host: String!
+    var description: String!
+    var notifyMsg: String!
 
-    init(host: String) {
+    init(notifyMsg: String) {
+        self.notifyMsg = notifyMsg
+        if let urlString = Regex("LOCATION: (.*)").match(notifyMsg)?.captures[0] {
+            if let url: NSURL? = NSURL(string: urlString) {
+                self.host = url?.host
+            }
+        }
+        self.description = Regex("SERVER: (.*)").match(notifyMsg)?.captures[0]
         self.name = host
-        self.host = host
     }
     
     func load(success: () -> Void) {

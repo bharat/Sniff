@@ -10,9 +10,14 @@ import Foundation
 import Alamofire
 import CheatyXML
 
-class SonosPlayer: Device {
+class SonosZonePlayer: Device {
     var playerData: XMLParser!
     var topologyData: XMLParser!
+    
+    override init(notifyMsg: String) {
+        super.init(notifyMsg: notifyMsg)
+        self.name = "\(self.name) (ZonePlayer)"
+    }
     
     override func load(success: () -> Void) {
         // The name of the player is the only required field so do that in init() before

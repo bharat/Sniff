@@ -12,8 +12,8 @@ import Regex
 
 
 class UnknownDevice: Device {
-    override init(host: String) {
-        super.init(host: host)
+    override init(notifyMsg msg: String) {
+        super.init(notifyMsg: msg)
         self.host = host
         self.name = "Unknown (\(host))"
     }
@@ -21,16 +21,16 @@ class UnknownDevice: Device {
 
 class UnknownNetwork: BaseNetwork, Network {
     
-    func foundHost(host: String) {
-        
+    func title() -> String {
+        return "Unidentified Devices"
     }
     
-    static func accept(network: Network, msg: String) -> Bool {        
-        if let host = Regex("HOST: (.*)").match(msg)?.captures[0] {
-            network.add(UnknownDevice(host: host))
-            return true
-        }
-        
-        return false
+    func foundHost(host: String) {
+        assert(false)
+    }
+    
+    func accept(msg: String) -> Bool {
+        self.add(UnknownDevice(notifyMsg: msg))
+        return true
     }
 }

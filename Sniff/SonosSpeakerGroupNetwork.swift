@@ -10,40 +10,35 @@ import Foundation
 import CocoaAsyncSocket
 import Regex
 
-class SonosZonePlayerNetwork: BaseNetwork, Network {
+class SonosSpeakerGroupNetwork: BaseNetwork, Network {
     
     func title() -> String {
-        return "Sonos Devices"
+        return "Sonos Groups"
     }
     
-    func foundPlayer(msg: String) {
-        let player = SonosZonePlayer(notifyMsg: msg)
+    func found(msg: String) {
+        self.add(SonosSpeakerGroup(notifyMsg: msg))
+//        let player = SonosSpeakerGroup(notifyMsg: msg)
         
         // We have to load the name before we can insert the player into the table since we display
         // and sort on name.
-        player.load({
-            // Minimize race conditions
-            if self.devices[player.host] == nil {
-                print("Found new player \(player.host)")
-                self.add(player)
-            
-                // After we've loaded the name then ask the player to check its topology to see 
-                // if it can locate other players and send them back here
-                player.discoverOthers(self.foundPlayer)
-            }
-        })
+//        player.load({
+//            // Minimize race conditions
+//            if self.devices[player.host] == nil {
+//                print("Found new group \(player.host)")
+//                self.add(player)
+//            
+//                // After we've loaded the name then ask the player to check its topology to see 
+//                // if it can locate other players and send them back here
+//                player.discoverOthers(self.foundPlayer)
+//            }
+//        })
     }
     
     func accept(msg: String) -> Bool {
-        if msg.containsString("ZonePlayer") || msg.containsString("ZPS") {
-            print("detected ZonePlayer")
-            self.foundPlayer(msg)
-            return true
-        }
-
         if msg.containsString("SpeakerGroup") {
             print("detected SpeakerGroup")
-            self.add(SonosSpeakerGroup(notifyMsg: msg))
+            self.found(msg)
             return true
         }
         return false

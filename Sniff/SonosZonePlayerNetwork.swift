@@ -10,13 +10,13 @@ import Foundation
 import CocoaAsyncSocket
 import Regex
 
-class SonosNetwork: BaseNetwork, Network {
+class SonosZonePlayerNetwork: BaseNetwork, Network {
     
     func title() -> String {
-        return "Sonos Devices"
+        return "Sonos Players"
     }
     
-    func foundPlayer(msg: String) {
+    func found(msg: String) {
         let player = SonosZonePlayer(notifyMsg: msg)
         
         // We have to load the name before we can insert the player into the table since we display
@@ -29,7 +29,7 @@ class SonosNetwork: BaseNetwork, Network {
             
                 // After we've loaded the name then ask the player to check its topology to see 
                 // if it can locate other players and send them back here
-                player.discoverOthers(self.foundPlayer)
+                player.discoverOthers(self.found)
             }
         })
     }
@@ -37,13 +37,7 @@ class SonosNetwork: BaseNetwork, Network {
     func accept(msg: String) -> Bool {
         if msg.containsString("ZonePlayer") || msg.containsString("ZPS") {
             print("detected ZonePlayer")
-            self.foundPlayer(msg)
-            return true
-        }
-
-        if msg.containsString("SpeakerGroup") {
-            print("detected SpeakerGroup")
-            self.add(SonosSpeakerGroup(notifyMsg: msg))
+            self.found(msg)
             return true
         }
         return false

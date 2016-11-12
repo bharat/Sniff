@@ -14,9 +14,9 @@ class SSDP: GCDAsyncUdpSocketDelegate {
     var multicastGroup          = "239.255.255.250"
     var multicastPort: UInt16   = 1900
     var ssdpSocket: GCDAsyncUdpSocket!
-    var networks = [String: Network]()
+    var networks: Networks
     
-    init(networks: [String: Network]) {
+    init(networks: Networks) {
         self.networks = networks
     }
     
@@ -43,16 +43,9 @@ class SSDP: GCDAsyncUdpSocketDelegate {
     
     @objc func udpSocket(sock: GCDAsyncUdpSocket, didReceiveData data: NSData, fromAddress address: NSData, withFilterContext filterContext: AnyObject?) {
         let msg = NSString(data: data, encoding: NSUTF8StringEncoding) as! String
-        print(msg)
+        print (msg)
         if msg.containsString("NOTIFY") {
-            // See who accepts it, with Unknown last
-            if SonosNetwork.accept(networks["SonosNetwork"]!, msg: msg) {
-                return
-            }
-            
-            if UnknownNetwork.accept(networks["UnknownNetwork"]!, msg: msg) {
-                return
-            }
+            networks.accept(msg)
         }
     }
 }

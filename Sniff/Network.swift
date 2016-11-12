@@ -9,12 +9,13 @@
 import Foundation
 
 protocol Network {
-    func foundHost(host: String)
+    func title() -> String
     func count() -> Int
-    func get(index: Int) -> Device
     func reset()
     func update()
     func add(device: Device)
+    func accept(msg: String) -> Bool
+    subscript(index:Int) -> Device { get }
 }
 
 class BaseNetwork {
@@ -29,7 +30,7 @@ class BaseNetwork {
         return devices.count
     }
     
-    func get(index: Int) -> Device {
+    subscript(index:Int) -> Device {
         return devices.values.sort()[index]
     }
     

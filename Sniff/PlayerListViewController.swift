@@ -11,7 +11,7 @@ import UIKit
 import SwiftLoader
 
 class PlayerListViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
-    var networks = [String: Network]()
+    var networks: Networks?
     var ssdp: SSDP?
     
     @IBOutlet var table: UITableView!
@@ -19,9 +19,11 @@ class PlayerListViewController: UIViewController, UITableViewDelegate, UITableVi
         super.viewDidLoad()
 
         if ssdp == nil {
-            networks["SonosNetwork"] = SonosNetwork(notify: self.update)
-            networks["UnknownNetwork"] = UnknownNetwork(notify: self.update)
-            ssdp = SSDP(networks: networks)
+            networks = Networks()
+            networks!.add(SonosZonePlayerNetwork(notify: self.update))
+            networks!.add(SonosSpeakerGroupNetwork(notify: self.update))
+            networks!.add(UnknownNetwork(notify: self.update))
+            ssdp = SSDP(networks: networks!)
             ssdp?.beginDiscovery()
 
             table.delegate = self
@@ -42,9 +44,7 @@ class PlayerListViewController: UIViewController, UITableViewDelegate, UITableVi
     
     func reset() {
         SwiftLoader.show(animated: true)
-        for network in networks.values {
-            network.reset()
-        }
+        networks!.reset()
         table.reloadData()
     }
     
@@ -57,13 +57,13 @@ class PlayerListViewController: UIViewController, UITableViewDelegate, UITableVi
         if (segue.identifier == "showDetails") {
             let svc = segue.destinationViewController as! PlayerDetailViewController;
             let path = table.indexPathForSelectedRow
-            svc.player = (networks["SonosNetwork"]!.get(path!.row) as! SonosPlayer)
+            svc.device = networks![path!.section][path!.row]
         }
     }
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         var count = 0
-        for network in networks.values {
+        for network in networks! {
             if network.count() > 0 {
                 count = count + 1
             }
@@ -72,39 +72,17 @@ class PlayerListViewController: UIViewController, UITableViewDelegate, UITableVi
     }
 
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        switch section {
-        case 0:
-            return networks["SonosNetwork"]!.count()
-            
-        default:
-            return 0
-        }
+        return networks![section].count()
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("Device Cell")
-        switch indexPath.section {
-        case 0:
-            cell!.textLabel?.text = networks["SonosNetwork"]!.get(indexPath.row).name
-            
-        default:
-            break
-        }
-        
+        cell!.textLabel?.text = networks![indexPath.section][indexPath.row].name
         return cell!
     }
     
     func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        switch section {
-        case 0:
-            return "Sonos Players"
-            
-        case 1:
-            return "Unknown"
-            
-        default:
-            return nil
-        }
+        return networks![section].title()
     }
 }
 
