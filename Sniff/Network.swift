@@ -7,6 +7,8 @@
 //
 
 import Foundation
+import Alamofire
+import CheatyXML
 
 class NetworkGroup {
     var name: String!
@@ -30,8 +32,8 @@ class NetworkGroup {
 }
 
 class Network {
-    var devices = [String: Device]()
-    var groups = [NetworkGroup]()
+    var seen = Set<String>()
+    var groups = [String: NetworkGroup]()
     var notify: ()->Void
 
     init(_ notify: @escaping ()->Void) {
@@ -39,7 +41,6 @@ class Network {
     }
     
     func reset() {
-        devices.removeAll(keepingCapacity: true)
         groups.removeAll(keepingCapacity: true)
     }
     
@@ -48,28 +49,31 @@ class Network {
     }
     
     func group(_ index: Int) -> NetworkGroup {
-        return groups[index]
+        // Sorting every time is easy but inefficient
+        return groups.values.sorted(by: {$0.name < $1.name})[index]
     }
+    
+    func add(_ host: String, _ url: String!) {
+        if seen.contains(url) {
+            return
+        }
+        
+        print("Retrieving \(url)")
+        seen.insert(url)
+        Alamofire.request(url).responseString { response in
+            if response.result.isFailure {
+                self.seen.remove(url)
+                print("Error retrieving \(url)")
+            } else {
+                let deviceData = CXMLParser(string: response.result.value!)
+                let device = DeviceFactory.create(host: host, data: deviceData)
 
-    func add(_ device: Device) {
-        if devices[device.id] == nil {
-            devices[device.id] = device
-            
-            var inserted = false
-            for g in groups {
-                if g.name == device.group {
-                    g.add(device)
-                    inserted = true
-                    break
+                if self.groups[device.group] == nil {
+                    self.groups[device.group] = NetworkGroup(device.group)
                 }
+                self.groups[device.group]!.add(device)
+                self.notify()
             }
-            
-            if !inserted {
-                let group = NetworkGroup(device.group)
-                groups.append(group)
-                group.add(device)
-            }
-            notify()
         }
     }
 }

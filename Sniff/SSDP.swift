@@ -17,7 +17,6 @@ class SSDP: NSObject, GCDAsyncUdpSocketDelegate {
     var multicastPort: UInt16   = 1900
     var ssdpSocket: GCDAsyncUdpSocket!
     var network: Network
-    var igd: Set<String> = []
     
     init(network: Network) {
         self.network = network
@@ -50,20 +49,7 @@ class SSDP: NSObject, GCDAsyncUdpSocketDelegate {
         if msg.contains("NOTIFY") && msg.contains("LOCATION") {
             let loc = Regex("LOCATION: (.*)").match(msg)?.captures[0]
             let host = GCDAsyncSocket.host(fromAddress: address)
-
-            if !igd.contains(loc!) {
-                print("Retrieving \(loc!)")
-                self.igd.insert(loc!)
-                Alamofire.request(loc!).responseString { response in
-                    if response.result.isFailure {
-                        self.igd.remove(loc!)
-                        print("Error retrieving \(loc)")
-                    } else {
-                        let deviceData = CXMLParser(string: response.result.value!)
-                        self.network.add(DeviceFactory.create(host: host, data: deviceData))
-                    }
-                }
-            }
+            self.network.add(host!, loc)
         }
     }
 }
