@@ -12,6 +12,7 @@ protocol Device {
     var name: String! { get }
     var host: String! { get }
     var group: String! { get }
+    var icon: String! { get }
     
     func discover(_ found: @escaping (_ url: String) -> Void)
 }
@@ -21,13 +22,14 @@ class BaseDevice: Device {
     var name: String!
     var host: String!
     var group: String!
+    var icon: String!
     
     func discover(_ found: @escaping (_ url: String) -> Void) {
     }
 }
 
 class UnknownDevice: BaseDevice {
-    init(_ data: CXMLParser!) {
+    init(_ host: String!, _ data: CXMLParser!) {
         super.init()
         
         self.id = data["device"]["UDN"].stringValue
@@ -35,8 +37,8 @@ class UnknownDevice: BaseDevice {
         if self.name == nil {
             self.name = "Unknown"
         }
-        self.host = "Unknown"
-        self.group = "Unknown"
+        self.host = host
+        self.group = "Unknown Devices"
     }
 }
 
@@ -46,16 +48,16 @@ class DeviceFactory {
 
         switch(deviceType) {
         case SonosZonePlayerDevice.type:
-            return SonosZonePlayerDevice(host: host, data: data)
+            return SonosZonePlayerDevice(host, data)
             
         case SonosSpeakerGroupDevice.type:
-            return SonosSpeakerGroupDevice(host: host, data: data)
+            return SonosSpeakerGroupDevice(host, data)
             
         case RouterDevice.type:
-            return RouterDevice(host: host, data: data)
+            return RouterDevice(host, data)
 
         default:
-            return UnknownDevice(data)
+            return UnknownDevice(host, data)
         }
     }
 }

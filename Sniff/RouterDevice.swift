@@ -11,7 +11,7 @@ class RouterDevice: BaseDevice {
     static var type = "urn:schemas-upnp-org:device:InternetGatewayDevice:1"
     var data: CXMLParser!
     
-    init(host: String!, data: CXMLParser!) {
+    init(_ host: String!, _ data: CXMLParser!) {
         super.init()
         
         self.data = data
@@ -21,6 +21,6 @@ class RouterDevice: BaseDevice {
         if name == nil {
             name = "(Blank)"
         }
-        self.group = "Router"
+        self.group = "Routers"
     }
 }

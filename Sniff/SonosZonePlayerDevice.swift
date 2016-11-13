@@ -12,14 +12,17 @@ class SonosZonePlayerDevice: BaseDevice {
     static var type = "urn:schemas-upnp-org:device:ZonePlayer:1"
     var data: CXMLParser!
     
-    init(host: String!, data: CXMLParser!) {
+    init(_ host: String!, _ data: CXMLParser!) {
         super.init()
         
         self.data = data
         self.host = host
         id = data["device"]["UDN"].stringValue
         name = data["device"]["roomName"].stringValue
-        self.group = "Sonos Player"
+        self.group = "Sonos Players"
+        
+        let path = data["device"]["iconList"]["icon"]["url"].stringValue
+        self.icon = "http://\(host!):1400\(path)"
     }
     
     override func discover(_ found: @escaping (_ url: String) -> Void) {

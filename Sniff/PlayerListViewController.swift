@@ -68,7 +68,17 @@ class PlayerListViewController: UIViewController, UITableViewDelegate, UITableVi
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Device Cell")
-        cell!.textLabel?.text = network!.group(indexPath.section).at(indexPath.row).name
+        let selected = network!.group(indexPath.section).at(indexPath.row)
+
+        cell!.textLabel?.text = selected.name
+        cell!.detailTextLabel?.text = selected.host
+        
+        if selected.icon != nil {
+            let url = URL(string: selected.icon)
+            let data = try? Data(contentsOf: url!)
+            cell!.imageView?.image = UIImage(data: data!)
+        }
+        
         return cell!
     }
     

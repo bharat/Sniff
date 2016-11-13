@@ -11,7 +11,7 @@ class SonosSpeakerGroupDevice: BaseDevice {
     static var type = "urn:smartspeaker-audio:device:SpeakerGroup:1"
     var data: CXMLParser!
     
-    init(host: String!, data: CXMLParser!) {
+    init(_ host: String!, _ data: CXMLParser!) {
         super.init()
         
         self.data = data
@@ -21,6 +21,6 @@ class SonosSpeakerGroupDevice: BaseDevice {
         if name == nil {
             name = "(Blank)"
         }
-        self.group = "Sonos Speaker Group"
+        self.group = "Sonos Speaker Groups"
     }
 }
