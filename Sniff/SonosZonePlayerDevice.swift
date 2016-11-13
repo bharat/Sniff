@@ -1,5 +1,5 @@
 //
-//  SonosPlayer.swift
+//  SonosZonePlayerDevice.swift
 //  Sniff
 //
 //  Created by Bharat Mediratta on 7/28/16.
@@ -10,29 +10,22 @@ import Foundation
 import Alamofire
 import CheatyXML
 
-class SonosZonePlayer: Device {
-    var playerData: CXMLParser!
-    var topologyData: CXMLParser!
+class SonosZonePlayerDevice: BaseDevice {
+    static var type = "urn:schemas-upnp-org:device:ZonePlayer:1"
+    var data: CXMLParser!
     
-    override init(notifyMsg: String) {
-        super.init(notifyMsg: notifyMsg)
-        self.name = "\(self.name) (ZonePlayer)"
-    }
-    
-    override func load(success: @escaping () -> Void) {
-        // The name of the player is the only required field so do that in init() before
-        // we notify the network that we have a new player
-        let locationUrl = "http://\(host):1400/xml/device_description.xml"
-        Alamofire.request(locationUrl).responseString { response in
-            if !response.result.isFailure {
-                self.playerData = CXMLParser(string: response.result.value!)
-                self.name = self.playerData["device"]["roomName"].stringValue
-                success()
-            }
-        }
+    init(host: String!, data: CXMLParser!) {
+        super.init()
+        
+        self.data = data
+        self.host = host
+        id = data["device"]["UDN"].stringValue
+        name = data["device"]["roomName"].stringValue
+        self.group = "Sonos Player"
     }
     
     func discoverOthers(_ foundPlayer: @escaping (_ host: String)->Void) {
+        /*
         Alamofire.request("http://\(self.host):1400/status/topology")
             .responseString { response in
                 if response.result.isSuccess {
@@ -43,6 +36,7 @@ class SonosZonePlayer: Device {
                     }
                 }
             }
+         */
     }
     
     func reboot() {

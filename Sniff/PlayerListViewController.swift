@@ -11,7 +11,7 @@ import UIKit
 import NVActivityIndicatorView
 
 class PlayerListViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, NVActivityIndicatorViewable {
-    var networks: Networks?
+    var network: Network?
     var ssdp: SSDP?
     
     @IBOutlet var table: UITableView!
@@ -19,11 +19,8 @@ class PlayerListViewController: UIViewController, UITableViewDelegate, UITableVi
         super.viewDidLoad()
 
         if ssdp == nil {
-            networks = Networks()
-            networks!.add(SonosZonePlayerNetwork(notify: self.update))
-            networks!.add(SonosSpeakerGroupNetwork(notify: self.update))
-            networks!.add(UnknownNetwork(notify: self.update))
-            ssdp = SSDP(networks: networks!)
+            network = Network(self.update)
+            ssdp = SSDP(network: network!)
             ssdp?.beginDiscovery()
 
             table.delegate = self
@@ -44,7 +41,7 @@ class PlayerListViewController: UIViewController, UITableViewDelegate, UITableVi
     
     func reset() {
         startAnimating()
-        networks!.reset()
+        network!.reset()
         table.reloadData()
     }
     
@@ -57,32 +54,26 @@ class PlayerListViewController: UIViewController, UITableViewDelegate, UITableVi
         if (segue.identifier == "showDetails") {
             let svc = segue.destination as! PlayerDetailViewController;
             let path = table.indexPathForSelectedRow
-            svc.device = networks![path!.section][path!.row]
+            svc.device = network!.group(path!.section).at(path!.row)
         }
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        var count = 0
-        for network in networks! {
-            if network.count() > 0 {
-                count = count + 1
-            }
-        }
-        return count
+        return network!.groupcount()
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return networks![section].count()
+        return network!.group(section).count()
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Device Cell")
-        cell!.textLabel?.text = networks![indexPath.section][indexPath.row].name
+        cell!.textLabel?.text = network!.group(indexPath.section).at(indexPath.row).name
         return cell!
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return networks![section].title()
+        return network!.group(section).name
     }
 }
 

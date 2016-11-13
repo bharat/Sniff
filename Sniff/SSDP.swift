@@ -9,15 +9,18 @@
 import Foundation
 import CocoaAsyncSocket
 import Regex
+import Alamofire
+import CheatyXML
 
 class SSDP: NSObject, GCDAsyncUdpSocketDelegate {
     var multicastGroup          = "239.255.255.250"
     var multicastPort: UInt16   = 1900
     var ssdpSocket: GCDAsyncUdpSocket!
-    var networks: Networks
+    var network: Network
+    var igd: Set<String> = []
     
-    init(networks: Networks) {
-        self.networks = networks
+    init(network: Network) {
+        self.network = network
     }
     
     func beginDiscovery() {
@@ -43,9 +46,24 @@ class SSDP: NSObject, GCDAsyncUdpSocketDelegate {
     
     @objc func udpSocket(_ sock: GCDAsyncUdpSocket, didReceive data: Data, fromAddress address: Data, withFilterContext filterContext: Any?) {
         let msg = NSString(data: data, encoding: String.Encoding.utf8.rawValue) as! String
-        print (msg)
-        if msg.contains("NOTIFY") {
-            networks.accept(msg)
+
+        if msg.contains("NOTIFY") && msg.contains("LOCATION") {
+            let loc = Regex("LOCATION: (.*)").match(msg)?.captures[0]
+            let host = GCDAsyncSocket.host(fromAddress: address)
+
+            if !igd.contains(loc!) {
+                print("Retrieving \(loc!)")
+                self.igd.insert(loc!)
+                Alamofire.request(loc!).responseString { response in
+                    if response.result.isFailure {
+                        self.igd.remove(loc!)
+                        print("Error retrieving \(loc)")
+                    } else {
+                        let deviceData = CXMLParser(string: response.result.value!)
+                        self.network.add(DeviceFactory.create(host: host, data: deviceData))
+                    }
+                }
+            }
         }
     }
 }

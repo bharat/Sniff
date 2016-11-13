@@ -8,44 +8,68 @@
 
 import Foundation
 
-protocol Network {
-    func title() -> String
-    func count() -> Int
-    func reset()
-    func update()
-    func add(_ device: Device)
-    func accept(_ msg: String) -> Bool
-    subscript(index:Int) -> Device { get }
-}
-
-class BaseNetwork {
-    var devices = [String: Device]()
-    var notify: ()->Void
-
-    init(notify: @escaping ()->Void) {
-        self.notify = notify
+class NetworkGroup {
+    var name: String!
+    var devices = [Device]()
+    
+    init(_ name: String) {
+        self.name = name
+    }
+    
+    func add(_ device: Device) {
+        devices.append(device)
+    }
+    
+    func at(_ index: Int) -> Device {
+        return devices[index]
     }
     
     func count() -> Int {
         return devices.count
     }
-    
-    subscript(index:Int) -> Device {
-        return devices.values.sorted(by: {return $0.name < $1.name})[index]
+}
+
+class Network {
+    var devices = [String: Device]()
+    var groups = [NetworkGroup]()
+    var notify: ()->Void
+
+    init(_ notify: @escaping ()->Void) {
+        self.notify = notify
     }
     
     func reset() {
         devices.removeAll(keepingCapacity: true)
+        groups.removeAll(keepingCapacity: true)
+    }
+    
+    func groupcount() -> Int {
+        return groups.count
+    }
+    
+    func group(_ index: Int) -> NetworkGroup {
+        return groups[index]
     }
 
-    func update() {
-        self.notify()
-    }
-        
     func add(_ device: Device) {
-        if devices[device.host] == nil {
-            devices[device.host] = device
-            self.notify()
+        if devices[device.id] == nil {
+            devices[device.id] = device
+            
+            var inserted = false
+            for g in groups {
+                if g.name == device.group {
+                    g.add(device)
+                    inserted = true
+                    break
+                }
+            }
+            
+            if !inserted {
+                let group = NetworkGroup(device.group)
+                groups.append(group)
+                group.add(device)
+            }
+            notify()
         }
     }
 }

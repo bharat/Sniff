@@ -1,5 +1,5 @@
 //
-//  SonosSpeakerGroup.swift
+//  SonosSpeakerGroupDevice.swift
 //  Sniff
 //
 //  Created by Bharat Mediratta on 8/10/16.
@@ -10,18 +10,28 @@ import Foundation
 import Alamofire
 import CheatyXML
 
-class SonosSpeakerGroup: Device {
-    var playerData: CXMLParser!
-    var topologyData: CXMLParser!
+class SonosSpeakerGroupDevice: BaseDevice {
+    static var type = "urn:smartspeaker-audio:device:SpeakerGroup:1"
+    var data: CXMLParser!
     
-    override init(notifyMsg: String) {
-        super.init(notifyMsg: notifyMsg)
-        self.name = "\(self.name) (SpeakerGroup)"
+    init(host: String!, data: CXMLParser!) {
+        super.init()
+        
+        self.data = data
+        self.host = host
+        id = data["device"]["UDN"].stringValue
+        name = data["device"]["friendlyName"].string
+        if name == nil {
+            name = "(Blank)"
+        }
+        self.group = "Sonos Speaker Group"
     }
+
     
-    override func load(success: @escaping () -> Void) {
+    func load(success: @escaping () -> Void) {
         // The name of the player is the only required field so do that in init() before
         // we notify the network that we have a new player
+        /*
         let locationUrl = "http://\(host):1400/xml/group_description.xml"
         Alamofire.request(locationUrl).responseString { response in
             if !response.result.isFailure {
@@ -30,5 +40,6 @@ class SonosSpeakerGroup: Device {
                 success()
             }
         }
+        */
     }
 }
