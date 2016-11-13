@@ -31,7 +31,7 @@ class BaseNetwork {
     }
     
     subscript(index:Int) -> Device {
-        return devices.values.sorted()[index]
+        return devices.values.sorted(by: {return $0.name < $1.name})[index]
     }
     
     func reset() {

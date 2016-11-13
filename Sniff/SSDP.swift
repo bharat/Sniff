@@ -10,7 +10,7 @@ import Foundation
 import CocoaAsyncSocket
 import Regex
 
-class SSDP: GCDAsyncUdpSocketDelegate {
+class SSDP: NSObject, GCDAsyncUdpSocketDelegate {
     var multicastGroup          = "239.255.255.250"
     var multicastPort: UInt16   = 1900
     var ssdpSocket: GCDAsyncUdpSocket!
@@ -41,7 +41,7 @@ class SSDP: GCDAsyncUdpSocketDelegate {
         ssdpSocket.send(data!, withTimeout: 1, tag: 0)
     }
     
-    @objc func udpSocket(_ sock: GCDAsyncUdpSocket, didReceive data: Data, fromAddress address: Data, withFilterContext filterContext: AnyObject?) {
+    @objc func udpSocket(_ sock: GCDAsyncUdpSocket, didReceive data: Data, fromAddress address: Data, withFilterContext filterContext: Any?) {
         let msg = NSString(data: data, encoding: String.Encoding.utf8.rawValue) as! String
         print (msg)
         if msg.contains("NOTIFY") {

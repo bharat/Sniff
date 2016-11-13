@@ -21,7 +21,7 @@ class SonosZonePlayerNetwork: BaseNetwork, Network {
         
         // We have to load the name before we can insert the player into the table since we display
         // and sort on name.
-        player.load({
+        player.load(success: {
             // Minimize race conditions
             if self.devices[player.host] == nil {
                 print("Found new player \(player.host)")

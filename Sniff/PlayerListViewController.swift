@@ -8,9 +8,9 @@
 //
 
 import UIKit
-import SwiftLoader
+import NVActivityIndicatorView
 
-class PlayerListViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class PlayerListViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, NVActivityIndicatorViewable {
     var networks: Networks?
     var ssdp: SSDP?
     
@@ -29,7 +29,7 @@ class PlayerListViewController: UIViewController, UITableViewDelegate, UITableVi
             table.delegate = self
             table.dataSource = self
             
-            SwiftLoader.show(animated: true)
+            startAnimating()
         }
     }
     
@@ -43,13 +43,13 @@ class PlayerListViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     func reset() {
-        SwiftLoader.show(animated: true)
+        startAnimating()
         networks!.reset()
         table.reloadData()
     }
     
     func update() {
-        SwiftLoader.hide()
+        stopAnimating()
         table.reloadData()
     }
     

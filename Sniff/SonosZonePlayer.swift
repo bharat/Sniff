@@ -11,21 +11,21 @@ import Alamofire
 import CheatyXML
 
 class SonosZonePlayer: Device {
-    var playerData: XMLParser!
-    var topologyData: XMLParser!
+    var playerData: CXMLParser!
+    var topologyData: CXMLParser!
     
     override init(notifyMsg: String) {
         super.init(notifyMsg: notifyMsg)
         self.name = "\(self.name) (ZonePlayer)"
     }
     
-    override func load(_ success: @escaping () -> Void) {
+    override func load(success: @escaping () -> Void) {
         // The name of the player is the only required field so do that in init() before
         // we notify the network that we have a new player
         let locationUrl = "http://\(host):1400/xml/device_description.xml"
-        Alamofire.request(.GET, locationUrl).responseString { response in
+        Alamofire.request(locationUrl).responseString { response in
             if !response.result.isFailure {
-                self.playerData = XMLParser(string: response.result.value!)
+                self.playerData = CXMLParser(string: response.result.value!)
                 self.name = self.playerData["device"]["roomName"].stringValue
                 success()
             }
@@ -33,13 +33,13 @@ class SonosZonePlayer: Device {
     }
     
     func discoverOthers(_ foundPlayer: @escaping (_ host: String)->Void) {
-        Alamofire.request(.GET, "http://\(self.host):1400/status/topology")
+        Alamofire.request("http://\(self.host):1400/status/topology")
             .responseString { response in
                 if response.result.isSuccess {
-                    self.topologyData = XMLParser(string: response.result.value!)
+                    self.topologyData = CXMLParser(string: response.result.value!)
                     for zp in self.topologyData["ZonePlayers"] {
-                        let locationUrl = NSURL(string: zp.attributes["location"] as! String)
-                        foundPlayer(host: (locationUrl?.host)!)
+                        let locationUrl: NSURL? = NSURL(string: zp.attribute("location").stringValue)
+                        foundPlayer((locationUrl?.host)!)
                     }
                 }
             }

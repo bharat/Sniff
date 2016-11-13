@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import SwiftLoader
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -18,13 +17,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         
-        var config : SwiftLoader.Config = SwiftLoader.Config()
-        config.size = 120
-        config.spinnerColor = .redColor()
-        config.foregroundColor = .blackColor()
-        config.foregroundAlpha = 0.5
-        SwiftLoader.setConfig(config)
-
         return true
     }
 
