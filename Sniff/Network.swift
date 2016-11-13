@@ -6,7 +6,6 @@
 //  Copyright © 2016 Bharat Mediratta. All rights reserved.
 //
 
-import Foundation
 import Alamofire
 import CheatyXML
 
@@ -42,6 +41,7 @@ class Network {
     
     func reset() {
         groups.removeAll(keepingCapacity: true)
+        seen.removeAll(keepingCapacity: true)
     }
     
     func groupcount() -> Int {
@@ -53,10 +53,13 @@ class Network {
         return groups.values.sorted(by: {$0.name < $1.name})[index]
     }
     
-    func add(_ host: String, _ url: String!) {
+    func add(_ url: String!) {
         if seen.contains(url) {
+            // print("Already seen \(url)")
             return
         }
+        
+        let host = URL(string: url)?.host
         
         print("Retrieving \(url)")
         seen.insert(url)
@@ -73,6 +76,8 @@ class Network {
                 }
                 self.groups[device.group]!.add(device)
                 self.notify()
+                
+                device.discover(self.add)
             }
         }
     }

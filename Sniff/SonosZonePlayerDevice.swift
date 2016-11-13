@@ -5,8 +5,6 @@
 //  Created by Bharat Mediratta on 7/28/16.
 //  Copyright © 2016 Bharat Mediratta. All rights reserved.
 //
-
-import Foundation
 import Alamofire
 import CheatyXML
 
@@ -24,19 +22,20 @@ class SonosZonePlayerDevice: BaseDevice {
         self.group = "Sonos Player"
     }
     
-    func discoverOthers(_ foundPlayer: @escaping (_ host: String)->Void) {
-        /*
-        Alamofire.request("http://\(self.host):1400/status/topology")
-            .responseString { response in
-                if response.result.isSuccess {
-                    self.topologyData = CXMLParser(string: response.result.value!)
-                    for zp in self.topologyData["ZonePlayers"] {
-                        let locationUrl: NSURL? = NSURL(string: zp.attribute("location").stringValue)
-                        foundPlayer((locationUrl?.host)!)
-                    }
+    override func discover(_ found: @escaping (_ url: String) -> Void) {
+        let topoUrl = "http://\(self.host!):1400/status/topology"
+        print("Requesting topology from \(topoUrl)")
+        
+        Alamofire.request(topoUrl).responseString { response in
+            if response.result.isSuccess {
+                let topo = CXMLParser(string: response.result.value!)
+                for zp in (topo?["ZonePlayers"])! {
+                    let url = zp.attribute("location").stringValue
+                    print("Located peer \(url)")
+                    found(url)
                 }
             }
-         */
+        }
     }
     
     func reboot() {

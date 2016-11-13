@@ -21,6 +21,7 @@
 		4FD336B51D582E250004AC29 /* SSDP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FD336B41D582E250004AC29 /* SSDP.swift */; };
 		4FD336BD1D5842D80004AC29 /* Network.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FD336BC1D5842D80004AC29 /* Network.swift */; };
 		4FD9D7C61DD84E15009951C7 /* Device.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FD9D7C51DD84E15009951C7 /* Device.swift */; };
+		4FD9D7C81DD8887F009951C7 /* RouterDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FD9D7C71DD8887F009951C7 /* RouterDevice.swift */; };
 		7C85C688E2DE6B75699989B4 /* Pods_SniffUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9922449F023204142E9311DD /* Pods_SniffUITests.framework */; };
 		85521B57BF14F10FEA910DCC /* Pods_Sniff.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D2A75BD2085F10A852B10762 /* Pods_Sniff.framework */; };
 /* End PBXBuildFile section */
@@ -63,6 +64,7 @@
 		4FD336B41D582E250004AC29 /* SSDP.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SSDP.swift; sourceTree = "<group>"; };
 		4FD336BC1D5842D80004AC29 /* Network.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Network.swift; sourceTree = "<group>"; };
 		4FD9D7C51DD84E15009951C7 /* Device.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Device.swift; sourceTree = "<group>"; };
+		4FD9D7C71DD8887F009951C7 /* RouterDevice.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RouterDevice.swift; sourceTree = "<group>"; };
 		5B240FD5C75A7C4E1AC179F2 /* Pods-SniffTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SniffTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-SniffTests/Pods-SniffTests.release.xcconfig"; sourceTree = "<group>"; };
 		69C92D80F89A3C227205F5E9 /* Pods-SniffUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SniffUITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SniffUITests/Pods-SniffUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		9922449F023204142E9311DD /* Pods_SniffUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SniffUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -157,6 +159,7 @@
 				4FD336B41D582E250004AC29 /* SSDP.swift */,
 				4F93F13D1D4BF8F100FAA7FA /* SonosZonePlayerDevice.swift */,
 				4FB056B61D5C0EF7006C355A /* SonosSpeakerGroupDevice.swift */,
+				4FD9D7C71DD8887F009951C7 /* RouterDevice.swift */,
 				4F93F1121D4BF89700FAA7FA /* Main.storyboard */,
 				4F93F1151D4BF89700FAA7FA /* Assets.xcassets */,
 				4F93F1171D4BF89700FAA7FA /* LaunchScreen.storyboard */,
@@ -468,6 +471,7 @@
 				4FB056B71D5C0EF7006C355A /* SonosSpeakerGroupDevice.swift in Sources */,
 				4FD336B51D582E250004AC29 /* SSDP.swift in Sources */,
 				4F93F1111D4BF89700FAA7FA /* PlayerListViewController.swift in Sources */,
+				4FD9D7C81DD8887F009951C7 /* RouterDevice.swift in Sources */,
 				4F93F10F1D4BF89700FAA7FA /* AppDelegate.swift in Sources */,
 				4F8FFDE91D5505E500F50321 /* PlayerDetailViewController.swift in Sources */,
 				4FD336BD1D5842D80004AC29 /* Network.swift in Sources */,

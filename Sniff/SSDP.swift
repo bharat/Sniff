@@ -5,12 +5,8 @@
 //  Created by Bharat Mediratta on 8/7/16.
 //  Copyright © 2016 Bharat Mediratta. All rights reserved.
 //
-
-import Foundation
 import CocoaAsyncSocket
 import Regex
-import Alamofire
-import CheatyXML
 
 class SSDP: NSObject, GCDAsyncUdpSocketDelegate {
     var multicastGroup          = "239.255.255.250"
@@ -48,8 +44,7 @@ class SSDP: NSObject, GCDAsyncUdpSocketDelegate {
 
         if msg.contains("NOTIFY") && msg.contains("LOCATION") {
             let loc = Regex("LOCATION: (.*)").match(msg)?.captures[0]
-            let host = GCDAsyncSocket.host(fromAddress: address)
-            self.network.add(host!, loc)
+            self.network.add(loc)
         }
     }
 }

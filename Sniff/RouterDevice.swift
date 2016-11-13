@@ -1,5 +1,5 @@
 //
-//  SonosSpeakerGroupDevice.swift
+//  RouterDevice.swift
 //  Sniff
 //
 //  Created by Bharat Mediratta on 8/10/16.
@@ -7,8 +7,8 @@
 //
 import CheatyXML
 
-class SonosSpeakerGroupDevice: BaseDevice {
-    static var type = "urn:smartspeaker-audio:device:SpeakerGroup:1"
+class RouterDevice: BaseDevice {
+    static var type = "urn:schemas-upnp-org:device:InternetGatewayDevice:1"
     var data: CXMLParser!
     
     init(host: String!, data: CXMLParser!) {
@@ -21,6 +21,6 @@ class SonosSpeakerGroupDevice: BaseDevice {
         if name == nil {
             name = "(Blank)"
         }
-        self.group = "Sonos Speaker Group"
+        self.group = "Router"
     }
 }

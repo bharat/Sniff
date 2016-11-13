@@ -5,10 +5,6 @@
 //  Created by Bharat Mediratta on 8/7/16.
 //  Copyright © 2016 Bharat Mediratta. All rights reserved.
 //
-
-import Foundation
-import Regex
-import Alamofire
 import CheatyXML
 
 protocol Device {
@@ -16,6 +12,8 @@ protocol Device {
     var name: String! { get }
     var host: String! { get }
     var group: String! { get }
+    
+    func discover(_ found: @escaping (_ url: String) -> Void)
 }
 
 class BaseDevice: Device {
@@ -23,6 +21,9 @@ class BaseDevice: Device {
     var name: String!
     var host: String!
     var group: String!
+    
+    func discover(_ found: @escaping (_ url: String) -> Void) {
+    }
 }
 
 class UnknownDevice: BaseDevice {
@@ -42,6 +43,7 @@ class UnknownDevice: BaseDevice {
 class DeviceFactory {
     static func create(host: String!, data: CXMLParser!) -> Device {
         let deviceType = data["device"]["deviceType"].stringValue
+
         switch(deviceType) {
         case SonosZonePlayerDevice.type:
             return SonosZonePlayerDevice(host: host, data: data)
@@ -49,6 +51,9 @@ class DeviceFactory {
         case SonosSpeakerGroupDevice.type:
             return SonosSpeakerGroupDevice(host: host, data: data)
             
+        case RouterDevice.type:
+            return RouterDevice(host: host, data: data)
+
         default:
             return UnknownDevice(data)
         }
