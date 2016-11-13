@@ -15,7 +15,7 @@ class PlayerDetailViewController: UIViewController {
     @IBOutlet var nameLabel: UILabel!
     @IBOutlet var hostLabel: UILabel!
     
-    @IBAction func reboot(sender: AnyObject) {
+    @IBAction func reboot(_ sender: AnyObject) {
         // device?.reboot()
     }
     

@@ -21,8 +21,8 @@ class SSDP: GCDAsyncUdpSocketDelegate {
     }
     
     func beginDiscovery() {
-        ssdpSocket = GCDAsyncUdpSocket(delegate: self, delegateQueue: dispatch_get_main_queue())
-        try! ssdpSocket.bindToPort(multicastPort)
+        ssdpSocket = GCDAsyncUdpSocket(delegate: self, delegateQueue: DispatchQueue.main)
+        try! ssdpSocket.bind(toPort: multicastPort)
         try! ssdpSocket.beginReceiving()
         try! ssdpSocket.enableBroadcast(true)
         try! ssdpSocket.joinMulticastGroup(multicastGroup)
@@ -36,15 +36,15 @@ class SSDP: GCDAsyncUdpSocketDelegate {
                 "ST: ssdp:all\r\n" +
                 "USER-AGENT: Sniff/1.0\r\n" +
             "\r\n"
-            ).dataUsingEncoding(NSUTF8StringEncoding)
+            ).data(using: String.Encoding.utf8)
         print("Beginning discovery")
-        ssdpSocket.sendData(data!, withTimeout: 1, tag: 0)
+        ssdpSocket.send(data!, withTimeout: 1, tag: 0)
     }
     
-    @objc func udpSocket(sock: GCDAsyncUdpSocket, didReceiveData data: NSData, fromAddress address: NSData, withFilterContext filterContext: AnyObject?) {
-        let msg = NSString(data: data, encoding: NSUTF8StringEncoding) as! String
+    @objc func udpSocket(_ sock: GCDAsyncUdpSocket, didReceive data: Data, fromAddress address: Data, withFilterContext filterContext: AnyObject?) {
+        let msg = NSString(data: data, encoding: String.Encoding.utf8.rawValue) as! String
         print (msg)
-        if msg.containsString("NOTIFY") {
+        if msg.contains("NOTIFY") {
             networks.accept(msg)
         }
     }

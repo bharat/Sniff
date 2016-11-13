@@ -26,7 +26,7 @@ class Device: Equatable, Hashable, Comparable {
     init(notifyMsg: String) {
         self.notifyMsg = notifyMsg
         if let urlString = Regex("LOCATION: (.*)").match(notifyMsg)?.captures[0] {
-            if let url: NSURL? = NSURL(string: urlString) {
+            if let url: URL? = URL(string: urlString) {
                 self.host = url?.host
             }
         }
@@ -34,7 +34,7 @@ class Device: Equatable, Hashable, Comparable {
         self.name = host
     }
     
-    func load(success: () -> Void) {
+    func load(_ success: () -> Void) {
         assert(false, "must be overridden")
     }
     

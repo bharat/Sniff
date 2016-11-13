@@ -16,7 +16,7 @@ class SonosZonePlayerNetwork: BaseNetwork, Network {
         return "Sonos Players"
     }
     
-    func found(msg: String) {
+    func found(_ msg: String) {
         let player = SonosZonePlayer(notifyMsg: msg)
         
         // We have to load the name before we can insert the player into the table since we display
@@ -34,8 +34,8 @@ class SonosZonePlayerNetwork: BaseNetwork, Network {
         })
     }
     
-    func accept(msg: String) -> Bool {
-        if msg.containsString("ZonePlayer") || msg.containsString("ZPS") {
+    func accept(_ msg: String) -> Bool {
+        if msg.contains("ZonePlayer") || msg.contains("ZPS") {
             print("detected ZonePlayer")
             self.found(msg)
             return true

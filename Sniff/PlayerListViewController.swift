@@ -38,7 +38,7 @@ class PlayerListViewController: UIViewController, UITableViewDelegate, UITableVi
         self.reset()
     }
     
-    @IBAction func refresh(sender: AnyObject) {
+    @IBAction func refresh(_ sender: AnyObject) {
         self.reset()
     }
     
@@ -53,15 +53,15 @@ class PlayerListViewController: UIViewController, UITableViewDelegate, UITableVi
         table.reloadData()
     }
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if (segue.identifier == "showDetails") {
-            let svc = segue.destinationViewController as! PlayerDetailViewController;
+            let svc = segue.destination as! PlayerDetailViewController;
             let path = table.indexPathForSelectedRow
             svc.device = networks![path!.section][path!.row]
         }
     }
     
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    func numberOfSections(in tableView: UITableView) -> Int {
         var count = 0
         for network in networks! {
             if network.count() > 0 {
@@ -71,17 +71,17 @@ class PlayerListViewController: UIViewController, UITableViewDelegate, UITableVi
         return count
     }
 
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return networks![section].count()
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("Device Cell")
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "Device Cell")
         cell!.textLabel?.text = networks![indexPath.section][indexPath.row].name
         return cell!
     }
     
-    func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return networks![section].title()
     }
 }

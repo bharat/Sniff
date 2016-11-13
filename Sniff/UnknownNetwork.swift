@@ -25,11 +25,11 @@ class UnknownNetwork: BaseNetwork, Network {
         return "Unidentified Devices"
     }
     
-    func foundHost(host: String) {
+    func foundHost(_ host: String) {
         assert(false)
     }
     
-    func accept(msg: String) -> Bool {
+    func accept(_ msg: String) -> Bool {
         self.add(UnknownDevice(notifyMsg: msg))
         return true
     }

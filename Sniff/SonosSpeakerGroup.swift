@@ -19,7 +19,7 @@ class SonosSpeakerGroup: Device {
         self.name = "\(self.name) (SpeakerGroup)"
     }
     
-    override func load(success: () -> Void) {
+    override func load(_ success: @escaping () -> Void) {
         // The name of the player is the only required field so do that in init() before
         // we notify the network that we have a new player
         let locationUrl = "http://\(host):1400/xml/group_description.xml"

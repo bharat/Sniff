@@ -19,7 +19,7 @@ class SonosZonePlayer: Device {
         self.name = "\(self.name) (ZonePlayer)"
     }
     
-    override func load(success: () -> Void) {
+    override func load(_ success: @escaping () -> Void) {
         // The name of the player is the only required field so do that in init() before
         // we notify the network that we have a new player
         let locationUrl = "http://\(host):1400/xml/device_description.xml"
@@ -32,7 +32,7 @@ class SonosZonePlayer: Device {
         }
     }
     
-    func discoverOthers(foundPlayer: (host: String)->Void) {
+    func discoverOthers(_ foundPlayer: @escaping (_ host: String)->Void) {
         Alamofire.request(.GET, "http://\(self.host):1400/status/topology")
             .responseString { response in
                 if response.result.isSuccess {

@@ -16,7 +16,7 @@ class SonosSpeakerGroupNetwork: BaseNetwork, Network {
         return "Sonos Groups"
     }
     
-    func found(msg: String) {
+    func found(_ msg: String) {
         self.add(SonosSpeakerGroup(notifyMsg: msg))
 //        let player = SonosSpeakerGroup(notifyMsg: msg)
         
@@ -35,8 +35,8 @@ class SonosSpeakerGroupNetwork: BaseNetwork, Network {
 //        })
     }
     
-    func accept(msg: String) -> Bool {
-        if msg.containsString("SpeakerGroup") {
+    func accept(_ msg: String) -> Bool {
+        if msg.contains("SpeakerGroup") {
             print("detected SpeakerGroup")
             self.found(msg)
             return true

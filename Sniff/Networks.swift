@@ -8,15 +8,15 @@
 
 import Foundation
 
-class Networks: SequenceType {
+class Networks: Sequence {
     var networks = [Network]()
     
-    func add(network: Network) {
+    func add(_ network: Network) {
         networks.append(network)
     }
     
-    func generate() -> IndexingGenerator<[Network]> {
-        return networks.generate()
+    func makeIterator() -> IndexingIterator<[Network]> {
+        return networks.makeIterator()
     }
     
     func reset() {
@@ -25,7 +25,7 @@ class Networks: SequenceType {
         }
     }
     
-    func accept(msg: String) {
+    func accept(_ msg: String) {
         print("Accept \(msg)")
         for network in networks {
             if network.accept(msg) {
