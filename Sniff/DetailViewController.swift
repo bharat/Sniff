@@ -16,7 +16,7 @@ class DetailViewController: UIViewController {
     @IBOutlet var hostLabel: UILabel!
     
     @IBAction func reboot(_ sender: AnyObject) {
-        // device?.reboot()
+        device?.action("reboot")
     }
     
     override func viewDidLoad() {

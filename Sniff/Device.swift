@@ -15,6 +15,7 @@ protocol Device {
     var icon: String! { get }
     
     func discover(_ found: @escaping (_ url: String) -> Void)
+    func action(_ name: String!) -> Void
 }
 
 class BaseDevice: Device {
@@ -25,6 +26,9 @@ class BaseDevice: Device {
     var icon: String!
     
     func discover(_ found: @escaping (_ url: String) -> Void) {
+    }
+
+    func action(_ name: String!) -> Void {
     }
 }
 

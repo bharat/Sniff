@@ -41,7 +41,15 @@ class SonosZonePlayerDevice: BaseDevice {
         }
     }
     
-    func reboot() {
-        print("reboot \(self.name)")
+    override func action(_ name: String!) {
+        switch(name) {
+        case "reboot":
+            Alamofire.request("http://\(self.host!):1400/reboot").responseString { response in
+            }
+            break
+            
+        default:
+            break
+        }
     }
 }
