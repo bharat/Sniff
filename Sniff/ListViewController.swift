@@ -1,6 +1,6 @@
 
 //
-//  ViewController.swift
+//  ListViewController.swift
 //  Sniff
 //
 //  Created by Bharat Mediratta on 7/29/16.
@@ -10,7 +10,7 @@
 import UIKit
 import NVActivityIndicatorView
 
-class PlayerListViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, NVActivityIndicatorViewable {
+class ListViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, NVActivityIndicatorViewable {
     var network: Network?
     var ssdp: SSDP?
     
@@ -52,7 +52,7 @@ class PlayerListViewController: UIViewController, UITableViewDelegate, UITableVi
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if (segue.identifier == "showDetails") {
-            let svc = segue.destination as! PlayerDetailViewController;
+            let svc = segue.destination as! DetailViewController;
             let path = table.indexPathForSelectedRow
             svc.device = network!.group(path!.section).at(path!.row)
         }
@@ -77,6 +77,8 @@ class PlayerListViewController: UIViewController, UITableViewDelegate, UITableVi
             let url = URL(string: selected.icon)
             let data = try? Data(contentsOf: url!)
             cell!.imageView?.image = UIImage(data: data!)
+        } else {
+            cell!.imageView?.image = nil
         }
         
         return cell!

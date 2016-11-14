@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  DetailViewController.swift
 //  Sniff
 //
 //  Created by Bharat Mediratta on 7/29/16.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class PlayerDetailViewController: UIViewController {
+class DetailViewController: UIViewController {
     var sonosNetwork: Network?
     var device: Device?
     

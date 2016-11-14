@@ -12,7 +12,7 @@
         <!--Devices-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="PlayerListViewController" customModule="Sniff" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="ListViewController" customModule="Sniff" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
@@ -82,7 +82,7 @@
         <!--Sonos Player-->
         <scene sceneID="9vj-4Z-V8R">
             <objects>
-                <viewController id="QjL-Mm-fmN" customClass="PlayerDetailViewController" customModule="Sniff" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="QjL-Mm-fmN" customClass="DetailViewController" customModule="Sniff" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="sN4-r6-s2z"/>
                         <viewControllerLayoutGuide type="bottom" id="lT3-st-HK5"/>
