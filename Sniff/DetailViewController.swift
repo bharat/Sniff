@@ -23,6 +23,8 @@ class DetailViewController: UIViewController {
         super.viewDidLoad()
         nameLabel.text = device?.name
         hostLabel.text = device?.host
+        
+        navigationItem.title = device?.type
     }
         
     override func didReceiveMemoryWarning() {

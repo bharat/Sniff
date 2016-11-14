@@ -8,7 +8,7 @@
 import CheatyXML
 
 class RouterDevice: BaseDevice {
-    static var type = "urn:schemas-upnp-org:device:InternetGatewayDevice:1"
+    static var schema = "urn:schemas-upnp-org:device:InternetGatewayDevice:1"
     var data: CXMLParser!
     
     init(_ host: String!, _ data: CXMLParser!) {
@@ -21,6 +21,6 @@ class RouterDevice: BaseDevice {
         if name == nil {
             name = "(Blank)"
         }
-        self.group = "Routers"
+        self.type = "Router"
     }
 }

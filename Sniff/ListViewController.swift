@@ -85,7 +85,7 @@ class ListViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return network!.group(section).name
+        return "\(network!.group(section).name!)s"
     }
 }
 

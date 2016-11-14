@@ -71,10 +71,10 @@ class Network {
                 let deviceData = CXMLParser(string: response.result.value!)
                 let device = DeviceFactory.create(host: host, data: deviceData)
 
-                if self.groups[device.group] == nil {
-                    self.groups[device.group] = NetworkGroup(device.group)
+                if self.groups[device.type] == nil {
+                    self.groups[device.type] = NetworkGroup(device.type)
                 }
-                self.groups[device.group]!.add(device)
+                self.groups[device.type]!.add(device)
                 self.notify()
                 
                 device.discover(self.add)

@@ -11,7 +11,7 @@ protocol Device {
     var id: String! { get }
     var name: String! { get }
     var host: String! { get }
-    var group: String! { get }
+    var type: String! { get }
     var icon: String! { get }
     
     func discover(_ found: @escaping (_ url: String) -> Void)
@@ -21,7 +21,7 @@ class BaseDevice: Device {
     var id: String!
     var name: String!
     var host: String!
-    var group: String!
+    var type: String!
     var icon: String!
     
     func discover(_ found: @escaping (_ url: String) -> Void) {
@@ -38,22 +38,22 @@ class UnknownDevice: BaseDevice {
             self.name = "Unknown"
         }
         self.host = host
-        self.group = "Unknown Devices"
+        self.type = "Unknown Device"
     }
 }
 
 class DeviceFactory {
     static func create(host: String!, data: CXMLParser!) -> Device {
-        let deviceType = data["device"]["deviceType"].stringValue
+        let schema = data["device"]["deviceType"].stringValue
 
-        switch(deviceType) {
-        case SonosZonePlayerDevice.type:
+        switch(schema) {
+        case SonosZonePlayerDevice.schema:
             return SonosZonePlayerDevice(host, data)
             
-        case SonosSpeakerGroupDevice.type:
+        case SonosSpeakerGroupDevice.schema:
             return SonosSpeakerGroupDevice(host, data)
             
-        case RouterDevice.type:
+        case RouterDevice.schema:
             return RouterDevice(host, data)
 
         default:

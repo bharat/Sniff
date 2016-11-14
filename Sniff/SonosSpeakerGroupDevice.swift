@@ -8,7 +8,7 @@
 import CheatyXML
 
 class SonosSpeakerGroupDevice: BaseDevice {
-    static var type = "urn:smartspeaker-audio:device:SpeakerGroup:1"
+    static var schema = "urn:smartspeaker-audio:device:SpeakerGroup:1"
     var data: CXMLParser!
     
     init(_ host: String!, _ data: CXMLParser!) {
@@ -21,6 +21,6 @@ class SonosSpeakerGroupDevice: BaseDevice {
         if name == nil {
             name = "(Blank)"
         }
-        self.group = "Sonos Speaker Groups"
+        self.type = "Sonos Speaker Group"
     }
 }

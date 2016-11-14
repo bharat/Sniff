@@ -9,7 +9,7 @@ import Alamofire
 import CheatyXML
 
 class SonosZonePlayerDevice: BaseDevice {
-    static var type = "urn:schemas-upnp-org:device:ZonePlayer:1"
+    static var schema = "urn:schemas-upnp-org:device:ZonePlayer:1"
     var data: CXMLParser!
     
     init(_ host: String!, _ data: CXMLParser!) {
@@ -19,7 +19,7 @@ class SonosZonePlayerDevice: BaseDevice {
         self.host = host
         id = data["device"]["UDN"].stringValue
         name = data["device"]["roomName"].stringValue
-        self.group = "Sonos Players"
+        self.type = "Sonos Player"
         
         let path = data["device"]["iconList"]["icon"]["url"].stringValue
         self.icon = "http://\(host!):1400\(path)"
